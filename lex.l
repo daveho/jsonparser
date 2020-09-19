@@ -1,5 +1,5 @@
 %{
-
+#include <stdio.h>
 #include "util.h"
 #include "node.h"
 #include "parse.tab.h"
@@ -30,13 +30,14 @@ char g_strbuf[4096];
                     /* beginning of string literal */
 \"                  { g_strbuf[0] = '\0'; add_to_string("\""); BEGIN STRLIT; }
                     /* escape sequence */
-<STRLIT>\\([\\\"/bfnrt]|u[0-9A-Fa-f]{4}) {  add_to_string(yytext); }
-                    /* "ordinary" character in string (should reject control chars) */
-<STRLIT>.           { add_to_string(yytext); }
+<STRLIT>\\([\\\"/bfnrt]|u[0-9A-Fa-f]{4}) { add_to_string(yytext); }
                     /* string literal ends */
 <STRLIT>\"          { add_to_string("\"");
                       BEGIN INITIAL;
                       return create_token(TOK_STRING_LITERAL, g_strbuf); }
+<STRLIT><<EOF>>     { err_fatal("Unterminated string literal"); }
+                    /* "ordinary" character in string (should reject control chars) */
+<STRLIT>.           { add_to_string(yytext); }
 
 .                   { err_fatal("Unknown character"); }
 
