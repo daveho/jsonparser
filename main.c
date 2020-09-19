@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "node.h"
 #include "grammar_symbols.h"
+#include "treeprint.h"
 
 int yyparse(void );
 
@@ -10,6 +11,6 @@ int main(void) {
 
   yyparse();
 
-  printf("TODO: print parse tree\n");
+  treeprint(g_parse_tree, get_grammar_symbol_name);
   return 0;
 }
