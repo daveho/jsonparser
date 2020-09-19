@@ -4,36 +4,51 @@
 #include "node.h"
 #include "parse.tab.h"
 
-int create_token(int kind);
+int create_token(int kind, const char *lexeme);
+void add_to_string(const char *s);
 
+// FIXME: fixed-size buffer for scanning string literals
+char g_strbuf[4096];
 %}
 
-%%
-
-"{"                       { return create_token(TOK_LBRACE); }
-"}"                       { return create_token(TOK_RBRACE); }
-"["                       { return create_token(TOK_LBRACKET); }
-"]"                       { return create_token(TOK_RBRACKET); }
-":"                       { return create_token(TOK_COLON); }
-","                       { return create_token(TOK_COMMA); }
-
-"-"?(0|[1-9][0-9]*)("."[0-9]*)?((e|E)("+"|"-")?[0-9]+)? { return create_token(TOK_NUMBER); }
-
-[ \t\r\n\v]+              { /* ignore whitespace */ }
-
-\"                        { /* TODO: handle string literal */ }
-
-.                         { err_fatal("Unknown character"); }
+%option noyywrap
+%x STRLIT
 
 %%
 
-int create_token(int kind) {
-  struct Node *n = node_alloc_str_copy(kind, yytext);
+"{"                 { return create_token(TOK_LBRACE, yytext); }
+"}"                 { return create_token(TOK_RBRACE, yytext); }
+"["                 { return create_token(TOK_LBRACKET, yytext); }
+"]"                 { return create_token(TOK_RBRACKET, yytext); }
+":"                 { return create_token(TOK_COLON, yytext); }
+","                 { return create_token(TOK_COMMA, yytext); }
+
+"-"?(0|[1-9][0-9]*)("."[0-9]*)?((e|E)("+"|"-")?[0-9]+)? { return create_token(TOK_NUMBER, yytext); }
+
+[ \t\r\n\v]+        { /* ignore whitespace */ }
+
+                    /* beginning of string literal */
+\"                  { g_strbuf[0] = '\0'; add_to_string("\""); BEGIN STRLIT; }
+                    /* escape sequence */
+<STRLIT>\\([\\\"/bfnrt]|u[0-9A-Fa-f]{4}) {  add_to_string(yytext); }
+                    /* "ordinary" character in string (should reject control chars) */
+<STRLIT>.           { add_to_string(yytext); }
+                    /* string literal ends */
+<STRLIT>\"          { add_to_string("\"");
+                      BEGIN INITIAL;
+                      return create_token(TOK_STRING_LITERAL, g_strbuf); }
+
+.                   { err_fatal("Unknown character"); }
+
+%%
+
+int create_token(int kind, const char *lexeme) {
+  struct Node *n = node_alloc_str_copy(kind, lexeme);
   // FIXME: set source info
   yylval.node = n;
   return kind;
 }
 
-int yywrap(void) {
-  return 0;
+void add_to_string(const char *s) {
+  strcat(g_strbuf, s);
 }
