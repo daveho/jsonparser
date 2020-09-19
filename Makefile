@@ -7,12 +7,10 @@ CFLAGS = -g -Wall
 %.o : %.c
 	$(CC) $(CFLAGS) -c $<
 
-all : jsonparser
-
 jsonparser : $(C_OBJS)
 	$(CXX) -o $@ $(C_OBJS)
 
-parse.tab.c : parse.y
+parse.tab.c parse.tab.h : parse.y
 	bison -d parse.y
 
 lex.yy.c : lex.l
