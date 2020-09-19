@@ -1,0 +1,7 @@
+*.swp
+/*.o
+/jsonparser
+/parse.tab.c
+/lex.yy.c
+/depend.mak
+/parse.tab.h
