@@ -26,43 +26,43 @@ struct Node *g_parse_tree;
 %%
 
 value
-	: object { $$ = g_parse_tree = node_build1(NODE_value, $1); }
-	| array { $$ = g_parse_tree = node_build1(NODE_value, $1); }
-	| TOK_NUMBER { $$ = g_parse_tree = node_build1(NODE_value, $1); }
-	| TOK_STRING_LITERAL { $$ = g_parse_tree = node_build1(NODE_value, $1); }
-	;
+  : object { $$ = g_parse_tree = node_build1(NODE_value, $1); }
+  | array { $$ = g_parse_tree = node_build1(NODE_value, $1); }
+  | TOK_NUMBER { $$ = g_parse_tree = node_build1(NODE_value, $1); }
+  | TOK_STRING_LITERAL { $$ = g_parse_tree = node_build1(NODE_value, $1); }
+  ;
 
 object
-	: TOK_LBRACE opt_field_list TOK_RBRACE { $$ = node_build3(NODE_object, $1, $2, $3); }
-	;
+  : TOK_LBRACE opt_field_list TOK_RBRACE { $$ = node_build3(NODE_object, $1, $2, $3); }
+  ;
 
 opt_field_list
-	: field_list { $$ = node_build1(NODE_opt_field_list, $1); }
-	| /* epsilon */ { $$ = node_build0(NODE_opt_field_list); }
-	;
+  : field_list { $$ = node_build1(NODE_opt_field_list, $1); }
+  | /* epsilon */ { $$ = node_build0(NODE_opt_field_list); }
+  ;
 
 field_list
-	: field { $$ = node_build1(NODE_field_list, $1); }
-	| field TOK_COMMA field_list { $$ = node_build3(NODE_field_list, $1, $2, $3); }
-	;
+  : field { $$ = node_build1(NODE_field_list, $1); }
+  | field TOK_COMMA field_list { $$ = node_build3(NODE_field_list, $1, $2, $3); }
+  ;
 
 field
-	: TOK_STRING_LITERAL TOK_COLON value { $$ = node_build3(NODE_field, $1, $2, $3); }
-	;
+  : TOK_STRING_LITERAL TOK_COLON value { $$ = node_build3(NODE_field, $1, $2, $3); }
+  ;
 
 array
-	: TOK_LBRACKET opt_value_list TOK_RBRACKET { $$ = node_build3(NODE_array, $1, $2, $3); }
-	;
+  : TOK_LBRACKET opt_value_list TOK_RBRACKET { $$ = node_build3(NODE_array, $1, $2, $3); }
+  ;
 
 opt_value_list
-	: value_list { $$ = node_build1(NODE_opt_value_list, $1); }
-	| /* epsilon */ { $$ = node_build0(NODE_opt_value_list); }
-	;
+  : value_list { $$ = node_build1(NODE_opt_value_list, $1); }
+  | /* epsilon */ { $$ = node_build0(NODE_opt_value_list); }
+  ;
 
 value_list
-	: value { $$ = node_build1(NODE_value_list, $1); }
-	| value TOK_COMMA value_list { $$ = node_build3(NODE_value_list, $1, $2, $3); }
-	;
+  : value { $$ = node_build1(NODE_value_list, $1); }
+  | value TOK_COMMA value_list { $$ = node_build3(NODE_value_list, $1, $2, $3); }
+  ;
 
 %%
 
