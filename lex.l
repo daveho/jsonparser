@@ -36,7 +36,8 @@ char g_strbuf[4096];
                       BEGIN INITIAL;
                       return create_token(TOK_STRING_LITERAL, g_strbuf); }
 <STRLIT><<EOF>>     { err_fatal("Unterminated string literal"); }
-                    /* "ordinary" character in string (should reject control chars) */
+                    /* "ordinary" character in string
+                     * (FIXME: should reject control chars) */
 <STRLIT>.           { add_to_string(yytext); }
 
 .                   { err_fatal("Unknown character"); }
