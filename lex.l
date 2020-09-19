@@ -22,10 +22,10 @@ char g_strbuf[4096];
 "]"                 { return create_token(TOK_RBRACKET, yytext); }
 ":"                 { return create_token(TOK_COLON, yytext); }
 ","                 { return create_token(TOK_COMMA, yytext); }
-
-"-"?(0|[1-9][0-9]*)("."[0-9]*)?((e|E)("+"|"-")?[0-9]+)? { return create_token(TOK_NUMBER, yytext); }
-
 [ \t\r\n\v]+        { /* ignore whitespace */ }
+
+"-"?(0|[1-9][0-9]*)("."[0-9]*)?((e|E)("+"|"-")?[0-9]+)? {
+                      return create_token(TOK_NUMBER, yytext); }
 
                     /* beginning of string literal */
 \"                  { g_strbuf[0] = '\0'; add_to_string("\""); BEGIN STRLIT; }
