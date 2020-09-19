@@ -15,7 +15,9 @@ void yyerror(const char *msg);
 %token<node> TOK_COLON TOK_COMMA
 %token<node> TOK_NUMBER TOK_STRING_LITERAL
 
-%type<node> value object array field
+%type<node> value
+%type<node> object opt_field_list field_list field
+%type<node> array opt_value_list value_list
 
 %%
 
