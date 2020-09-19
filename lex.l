@@ -4,7 +4,7 @@
 #include "node.h"
 #include "parse.tab.h"
 
-struct Node *create_token(int kind);
+int create_token(int kind);
 
 %}
 
@@ -17,7 +17,7 @@ struct Node *create_token(int kind);
 ":"                       { return create_token(TOK_COLON); }
 ","                       { return create_token(TOK_COMMA); }
 
-"-"?[0-9]+("."[0-9]*)?    { return create_token(TOK_NUMBER); }
+"-"?(0|[1-9][0-9]*)("."[0-9]*)?((e|E)("+"|"-")?[0-9]+)? { return create_token(TOK_NUMBER); }
 
 [ \t\r\n\v]+              { /* ignore whitespace */ }
 
@@ -27,9 +27,13 @@ struct Node *create_token(int kind);
 
 %%
 
-struct int create_token(int kind) {
+int create_token(int kind) {
   struct Node *n = node_alloc_str_copy(kind, yytext);
   // FIXME: set source info
   yylval.node = n;
   return kind;
+}
+
+int yywrap(void) {
+  return 0;
 }
