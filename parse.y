@@ -5,6 +5,9 @@
 
 int yylex(void);
 void yyerror(const char *msg);
+
+// Global variable pointing to root of parse tree
+struct Node *g_parse_tree;
 %}
 
 %union {
@@ -62,3 +65,6 @@ value_list
 
 %%
 
+void yyerror(const char *msg) {
+  err_fatal("%s\n", msg);
+}

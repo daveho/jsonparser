@@ -5,3 +5,4 @@
 /lex.yy.c
 /depend.mak
 /parse.tab.h
+/grammar_symbols.[hc]

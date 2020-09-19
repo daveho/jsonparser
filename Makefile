@@ -1,4 +1,4 @@
-C_SRCS = main.c util.c parse.tab.c lex.yy.c grammar_symbols.c node.c treeprint.c value.c
+C_SRCS = main.c util.c parse.tab.c lex.yy.c grammar_symbols.c node.c treeprint.c
 C_OBJS = $(C_SRCS:%.c=%.o)
 
 CC = gcc
